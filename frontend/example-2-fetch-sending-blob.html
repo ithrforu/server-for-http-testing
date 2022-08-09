@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <style>
+      .canvasElem {
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas name="uploaded_file" id="canvasElem" class="canvasElem" width="400" height="400"></canvas>
+    <button type="submit" class="button">Отправить</button>
+
+    <script>
+      const CANVAS_ELEM = document.querySelector('.canvasElem');
+      const BUTTON = document.querySelector('.button');
+      const FORM = document.querySelector('.form');
+
+      CANVAS_ELEM.addEventListener('mousemove', (e) => {
+        const CTX = CANVAS_ELEM.getContext('2d');
+        CTX.lineTo(e.clientX, e.clientY);
+        CTX.stroke();
+      });
+
+      BUTTON.addEventListener('click', e => {
+        CANVAS_ELEM.toBlob(blob => {
+          const FD = new FormData();
+          FD.append('file', blob, 'image.png');
+
+          fetch('http://127.0.0.1:3333', {
+            method: 'POST',
+            body: FD
+          })
+            .then(response => response.text())
+            .then(console.log);
+
+        }, 'image/png');
+      });
+
+      FORM.addEventListener('submit', e => {
+        e.preventDefault();
+      })
+    </script>
+  </body>
+</html>
