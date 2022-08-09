@@ -17,7 +17,6 @@
     <script>
       const CANVAS_ELEM = document.querySelector('.canvasElem');
       const BUTTON = document.querySelector('.button');
-      const FORM = document.querySelector('.form');
 
       CANVAS_ELEM.addEventListener('mousemove', (e) => {
         const CTX = CANVAS_ELEM.getContext('2d');
@@ -34,15 +33,18 @@
             method: 'POST',
             body: FD
           })
-            .then(response => response.text())
-            .then(console.log);
+            .then(response => {
+              if(!response.ok) {
+                throw new Error(`Response status is not ok: ${response.status}: ${response.statusText}.`);
+              } else {
+                return response.json();
+              }
+            })
+            .then(console.log)
+            .catch(e => console.log(e));
 
         }, 'image/png');
       });
-
-      FORM.addEventListener('submit', e => {
-        e.preventDefault();
-      })
     </script>
   </body>
 </html>
